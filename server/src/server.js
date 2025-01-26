@@ -1,9 +1,9 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const apiRouter = require('./routes/api');
 require('dotenv').config();
-// const apiRouter = require('./routes/api');
-// app.use('/api',apiRouter); 
+app.use('/api', apiRouter);
 
 const PORT = process.env.PORT;
 const MONGODB_URI = process.env.MONGODB_URI;
