@@ -41,7 +41,7 @@ export default function Home() {
           AuthKit
         </h1>
         <p className='text-xl text-gray-400'>
-          The world's best login box, powered by WorkOS + Radix.
+          The world's best login box, powered by JWT.
         </p>
         <div className='flex justify-center gap-4 pt-4'>
           <Link
