@@ -2,21 +2,34 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 import { Eye, EyeOff } from 'lucide-react';
+import { registerSchema } from '../schemas';
 
 export default function Register() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const formik = useFormik({
+  const onSubmit = async (values, actions) => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    actions.resetForm();
+  };
+
+  const {
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    handleBlur,
+    handleChange,
+    handleSubmit,
+  } = useFormik({
     initialValues: {
       email: '',
       password: '',
       confirmPassword: '',
     },
-    // onSubmit: values => {
-    //   alert(JSON.stringify(values, null, 2));
-    // },
+    validationSchema: registerSchema,
+    onSubmit,
   });
 
   const togglePasswordVisibility = field => {
@@ -33,7 +46,7 @@ export default function Register() {
         <h2 className='text-2xl font-bold text-center mb-8'>
           Create an account
         </h2>
-        <form className='space-y-6' autoComplete='off'>
+        <form className='space-y-6' autoComplete='off' onSubmit={handleSubmit}>
           {/* email input */}
           <div>
             <label className='block text-sm font-medium text-gray-400 mb-2'>
@@ -42,12 +55,15 @@ export default function Register() {
             <input
               type='email'
               name='email'
-              required
               className='w-full px-4 py-3 rounded-lg bg-gray-900/50 border border-gray-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors'
               placeholder='Enter your email'
-              value={formik.values.email}
-              onChange={formik.handleChange}
+              value={values.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
             />
+            {errors.email && touched.email && (
+              <p className='text-red-500 text-sm mt-1'>{errors.email}</p>
+            )}
           </div>
           {/* password input */}
           <div>
@@ -58,20 +74,24 @@ export default function Register() {
               <input
                 type={showPassword ? 'text' : 'password'}
                 name='password'
-                required
                 className='w-full px-4 py-3 rounded-lg bg-gray-900/50 border border-gray-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors pr-10'
                 placeholder='Create a password'
-                value={formik.values.password}
-                onChange={formik.handleChange}
+                value={values.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
               <button
                 type='button'
                 onClick={() => togglePasswordVisibility('password')}
-                className='absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-200'
+                className='absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 hover:text-gray-200'
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
+            {errors.password && touched.password && (
+              <p className='text-red-500 text-sm mt-1'>{errors.password}</p>
+            )}
           </div>
           {/* confirm password input */}
           <div>
@@ -82,27 +102,40 @@ export default function Register() {
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 name='confirmPassword'
-                required
                 className='w-full px-4 py-3 rounded-lg bg-gray-900/50 border border-gray-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-colors pr-10'
                 placeholder='Confirm your password'
-                value={formik.values.confirmPassword}
-                onChange={formik.handleChange}
+                value={values.confirmPassword}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
               <button
                 type='button'
                 onClick={() => togglePasswordVisibility('confirmPassword')}
-                className='absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-200'
+                className='absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 hover:text-gray-200'
+                aria-label={
+                  showConfirmPassword ? 'Hide password' : 'Show password'
+                }
               >
                 {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
+            {errors.confirmPassword && touched.confirmPassword && (
+              <p className='text-red-500 text-sm mt-1'>
+                {errors.confirmPassword}
+              </p>
+            )}
           </div>
           {/* submit button */}
           <button
             type='submit'
-            className='w-full px-4 py-3 rounded-lg bg-blue-500 hover:bg-blue-600 transition-colors font-medium'
+            disabled={isSubmitting}
+            className={`w-full px-4 py-3 rounded-lg transition-colors font-medium ${
+              isSubmitting
+                ? 'bg-blue-500 opacity-50 cursor-not-allowed'
+                : 'bg-blue-500 hover:bg-blue-600'
+            }`}
           >
-            Create account
+            {isSubmitting ? 'Loading...' : 'Create account'}
           </button>
         </form>
         {/* redirect */}
