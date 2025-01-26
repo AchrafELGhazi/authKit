@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Form, Formik } from 'formik';
 import CustomInput from '../components/CustomInput';
@@ -8,16 +7,14 @@ export default function Login() {
   const navigate = useNavigate();
 
   const onSubmit = async (values, actions) => {
-    await new Promise((resolve, reject) => {
-      setTimeout(resolve, 3000);
-    });
+    await new Promise(resolve => setTimeout(resolve, 3000));
     actions.resetForm();
   };
 
   return (
     <div className='max-w-md mx-auto pt-20'>
       <div className='rounded-2xl backdrop-blur-md bg-white/5 border border-gray-800 p-8'>
-        <h2 className='text-2xl font-bold text-center mb-8'>Login </h2>
+        <h2 className='text-2xl font-bold text-center mb-8'>Login</h2>
         <Formik
           initialValues={{
             email: '',
@@ -50,13 +47,13 @@ export default function Login() {
                 }`}
               >
                 {isSubmitting ? 'Logging In...' : 'Login'}
-              </button>{' '}
+              </button>
             </Form>
           )}
         </Formik>
         <div className='mt-6 text-center text-gray-400'>
           Don't have an account?
-          <Link to='/register' className='text-blue-400 hover:underline'>
+          <Link to='/register' className='text-blue-400 hover:underline ml-1'>
             Sign up
           </Link>
         </div>
