@@ -8,20 +8,34 @@ export default function Register() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [fetchErrors, setFetchErrors] = useState({});
 
-  const onSubmit = async (values) => {
-    const response = await fetch('http://localhost:3000/api/auth/register', {
-      method: 'POST',
-      body: JSON.stringify({ email: values.email, password: values.password }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-    if (!response.ok) {
-      console.log('signing up failed');
-    } else {
-      console.log('WOHO');
-      navigate('/login');
+  const onSubmit = async (values, actions) => {
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+        headers: { 'Content-Type': 'application/json' },
+      }); 
+      const data = await response.json();
+      console.log(data);
+
+      if (!response.ok) {
+        setFetchErrors(data.errors);
+        console.log(data.errors);
+        return;
+      }
+
+      console.log('Registration successful!', data);
+      // actions.resetForm();
+      // navigate('/login');
+    } catch (err) {
+      setFetchErrors({ general: 'Something went wrong. Please try again.' });
+      console.error('Error during registration:', err);
     }
-    actions.resetForm();
   };
 
   const {
@@ -71,9 +85,12 @@ export default function Register() {
               onChange={handleChange}
               onBlur={handleBlur}
             />
-            {errors.email && touched.email && (
-              <p className='text-red-500 text-sm mt-1'>{errors.email}</p>
+            {fetchErrors.email && (
+              <p className='text-red-500 text-sm mt-1'>{fetchErrors.email}</p>
             )}
+            {/* {errors.email && touched.email && (
+              <p className='text-red-500 text-sm mt-1'>{errors.email}</p>
+            )} */}
           </div>
           {/* password input */}
           <div>
@@ -90,6 +107,7 @@ export default function Register() {
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
+
               <button
                 type='button'
                 onClick={() => togglePasswordVisibility('password')}
