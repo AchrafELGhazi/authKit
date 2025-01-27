@@ -15,7 +15,7 @@ const registerController = async (req, res) => {
     res.status(201).json(userInfo);
   } catch (error) {
     const errors =  handleErrors(error);
-    res.status(400).send('error creating the user');
+    res.status(400).json({errors});
   }
 };
 
