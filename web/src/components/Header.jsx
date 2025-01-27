@@ -1,7 +1,20 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Shield } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function Header() {
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+
+
+  const logout = async () => {
+    await fetch('http://localhost:3000/api/auth/logout', {
+      method: 'GET',
+      credentials: 'include',
+    });
+    navigate('/');
+  };
 
   return (
     <header className='fixed w-full top-9 left-1/2 -translate-x-1/2 z-50 backdrop-blur-md bg-[#080B14]/80 border border-gray-800 rounded-full max-w-7xl mx-auto shadow-2xl shadow-blue-500/5'>
@@ -26,6 +39,7 @@ export default function Header() {
                   Secret
                 </Link>
                 <button
+                  onClick={logout}
                   className='px-4 py-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 transition-colors'
                 >
                   Logout

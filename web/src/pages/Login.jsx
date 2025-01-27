@@ -7,8 +7,35 @@ export default function Login() {
   const navigate = useNavigate();
 
   const onSubmit = async (values, actions) => {
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    actions.resetForm();
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.error) {
+          actions.setErrors({ general: data.error });
+        } else {
+          actions.setErrors(data.errors);
+        }
+        return;
+      }
+
+      console.log('Login successful!', data);
+      actions.resetForm();
+      navigate('/secret'); 
+    } catch (err) {
+      console.error('Error during login:', err);
+      actions.setErrors({ general: 'Something went wrong. Please try again.' });
+    }
   };
 
   return (
@@ -23,7 +50,7 @@ export default function Login() {
           validationSchema={loginSchema}
           onSubmit={onSubmit}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, errors }) => (
             <Form className='space-y-6'>
               <CustomInput
                 label='Email address'
@@ -37,6 +64,11 @@ export default function Login() {
                 type='password'
                 placeholder='Enter your password'
               />
+              {errors.general && (
+                <div className='text-red-500 text-sm mt-1'>
+                  {errors.general}
+                </div>
+              )}
               <button
                 type='submit'
                 disabled={isSubmitting}

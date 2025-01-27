@@ -19,7 +19,7 @@ export default function Register() {
           password: values.password,
         }),
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', // Include credentials in the request
+        credentials: 'include',
       }); 
       const data = await response.json();
       console.log(data);
@@ -31,8 +31,8 @@ export default function Register() {
       }
 
       console.log('Registration successful!', data);
-      // actions.resetForm();
-      // navigate('/login');
+      actions.resetForm();
+      navigate('/login');
     } catch (err) {
       setFetchErrors({ general: 'Something went wrong. Please try again.' });
       console.error('Error during registration:', err);

@@ -3,6 +3,7 @@ const User = require('../models/User');
 const handleErrors = require('../utils/handleErrors');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const bcrypt = require('bcrypt');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const MAX_AGE = 3 * 24 * 60 * 60;
@@ -15,9 +16,33 @@ const createToken = id => {
 
 const loginController = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
-  res.send('sign in');
+
+  try {
+    const userInfo = await User.findOne({ email });
+    if (!userInfo) {
+      return res.status(400).json({ error: 'Email not found' });
+    }
+
+    const auth = await bcrypt.compare(password, userInfo.password);
+    if (!auth) {
+      return res.status(400).json({ error: 'Incorrect password' });
+    }
+
+    const token = createToken(userInfo._id);
+
+    res.cookie('jwt', token, {
+      maxAge: MAX_AGE * 1000,
+      httpOnly: true,
+    });
+
+    res.status(200).json({ user: userInfo._id });
+  } catch (err) {
+    console.error('Error during login:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };
+
+module.exports = { loginController };
 
 const registerController = async (req, res) => {
   const { email, password } = req.body;
@@ -30,6 +55,7 @@ const registerController = async (req, res) => {
       maxAge: MAX_AGE * 1000,
       httpOnly: true,
     });
+
     res.status(201).json({ userInfo: userInfo._id });
   } catch (error) {
     const errors = handleErrors(error);
@@ -38,6 +64,7 @@ const registerController = async (req, res) => {
 };
 
 const logoutController = (req, res) => {
+  const token = res.cookie('jwt', '', { maxAge: 1 });
   res.send('Sign out');
 };
 
