@@ -9,8 +9,18 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const onSubmit = async (values, actions) => {
-    await new Promise(resolve => setTimeout(resolve, 3000));
+  const onSubmit = async (values) => {
+    const response = await fetch('http://localhost:3000/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ email: values.email, password: values.password }),
+      headers: { 'Content-Type': 'application/json' },
+    });
+    if (!response.ok) {
+      console.log('signing up failed');
+    } else {
+      console.log('WOHO');
+      navigate('/login');
+    }
     actions.resetForm();
   };
 

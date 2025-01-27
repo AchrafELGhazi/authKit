@@ -1,19 +1,24 @@
-const mongoose = require('mongoose')
-const { Schema, model } = mongoose();
+const mongoose = require('mongoose');
+const { Schema, model } = mongoose;
+const { isEmail } = require('validator');
 
-const userSchema = new Schema({
-  email: {
-    type: string,
-    required: true,
-    unique: true,
-    lowercase:true
+const userSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: [true, 'Please enter an email'],
+      unique: true,
+      lowercase: true,
+      validate: [isEmail, 'Please enter a valid email'],
+    },
+    password: {
+      type: String,
+      required: [true, 'Please enter a password'],
+      minlength: [8, 'Password must be at least 8 characters'],
+    }, 
   },
-  password: {
-    type: string,
-    required: true,
-    minLength: 8,
-  }
-});
+  { timestamps: true }
+);
 
 const User = model('user', userSchema);
 

@@ -1,15 +1,22 @@
 const express = require('express');
+const User = require('../models/User');
+const handleErrors = require('../utils/handleErrors');
 
-const loginController = (req, res) => {
+const loginController = async (req, res) => {
   const { email, password } = req.body;
   console.log(email, password);
   res.send('sign in');
 };
 
-const registerController = (req, res) => {
+const registerController = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email, password);
-  res.send('sign up');
+  try {
+    const userInfo = await User.create({ email, password });
+    res.status(201).json(userInfo);
+  } catch (error) {
+    const errors =  handleErrors(error);
+    res.status(400).send('error creating the user');
+  }
 };
 
 const logoutController = (req, res) => {
