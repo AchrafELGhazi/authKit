@@ -19,6 +19,7 @@ export default function Register() {
           password: values.password,
         }),
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Include credentials in the request
       }); 
       const data = await response.json();
       console.log(data);

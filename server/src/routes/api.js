@@ -13,20 +13,20 @@ apiRouter.use(cors({ credentials: true, origin: 'http://localhost:5173' }));
 apiRouter.use(cookieParser());
 
 //this is useful to understand and learn about cookies
-apiRouter.get('/setCookies', (req, res) => {
-  // res.setHeader('Set-cookie', 'newUser=true');
-  res.cookie('token', true, {
-    maxAge: 1000 * 60 * 60 * 24,
-    // secure: true,
-    httpOnly: true,
-  });
-  res.send('You got the cookies');
-});
+// apiRouter.get('/setCookies', (req, res) => {
+//   // res.setHeader('Set-cookie', 'newUser=true');
+//   res.cookie('token', true, {
+//     maxAge: 1000 * 60 * 60 * 24,
+//     // secure: true,
+//     httpOnly: true,
+//   });
+//   res.send('You got the cookies');
+// });
 
-apiRouter.get('/readCookies', (req, res) => {
-  const cookies = req.cookies;
-  res.json(cookies)
-});
+// apiRouter.get('/readCookies', (req, res) => {
+//   const cookies = req.cookies;
+//   res.json(cookies)
+// });
 
 apiRouter.use('/auth', authRouter);
 
