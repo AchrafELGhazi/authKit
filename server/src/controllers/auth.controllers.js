@@ -68,4 +68,19 @@ const logoutController = (req, res) => {
   res.send('Sign out');
 };
 
-module.exports = { loginController, registerController, logoutController };
+const getUserInfoController = (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'User not authenticated' });
+  }
+
+  const { _id, email } = req.user;
+  res.status(200).json({ user: { id: _id, email } });
+};
+
+
+module.exports = {
+  loginController,
+  registerController,
+  logoutController,
+  getUserInfoController,
+};
