@@ -42,7 +42,6 @@ const loginController = async (req, res) => {
   }
 };
 
-module.exports = { loginController };
 
 const registerController = async (req, res) => {
   const { email, password } = req.body;
